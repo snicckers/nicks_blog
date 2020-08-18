@@ -1,19 +1,22 @@
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Register.StartupHook('TeX Jax Ready', function () {
-      MathJax.InputJax.TeX.prefilterHooks.Add(function (data) {
-        data.math = data.math.replace(/^% <!\[CDATA\[/, '').replace(/%\]\]>$/, '');
-      });
-    });
-</script>
-<script type="text/javascript" id="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/latest.js"></script>
-
-
-<!-- for mathjax support -->
-{% if page.usemathjax %}
+{% if page.mathjax %}
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
-  TeX: { equationNumbers: { autoNumber: "AMS" } }
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
   });
 </script>
-<script type="text/javascript" async src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script
+  type="text/javascript"
+  charset="utf-8"
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+>
+</script>
+<script
+  type="text/javascript"
+  charset="utf-8"
+  src="https://vincenttam.github.io/javascripts/MathJaxLocal.js"
+>
+</script>
 {% endif %}
