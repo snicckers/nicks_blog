@@ -1,7 +1,7 @@
 # Site settings
 title:          Tale
 description:    "My personal engineering blog"
-baseurl:        "/tale"
+baseurl:        ""
 url:            "https://snicckers.github.io"
 
 # Google Analytics
