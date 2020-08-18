@@ -239,8 +239,7 @@ So with that ressuring message I started off with my quest to tune a fast-acting
 
 The solution? Change the values in real time! So I acquired an "unused" tv-remote, and I was lucky enough to have an infrared sensor hanging around. 
 
-<img src="/assets/images/infrared.jpg" alt="">
-<background-image: url("~/assets/foobar.jpg");>
+<img src="nicks_blog/assets/images/infrared.jpg" alt="">
 
 Now I could instantly change my PID gains without having to re-upload the entire program, cutting a 60 second process down to a fraciton of a second, and it injected a large dose of fun into the tuning process. 
 
