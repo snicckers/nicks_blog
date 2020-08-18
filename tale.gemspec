@@ -3,8 +3,8 @@
 Gem::Specification.new do |spec|
   spec.name          = "tale"
   spec.version       = "0.2.0"
-  spec.authors       = ["Chester How"]
-  spec.email         = ["chesterhow@gmail.com"]
+  spec.authors       = ["Nick Williams"]
+  spec.email         = ["nicholasowenwilliams@live.com"]
 
   spec.summary       = %q{Tale is a minimal Jekyll theme curated for storytellers.}
   spec.homepage      = "https://github.com/chesterhow/tale"

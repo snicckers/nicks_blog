@@ -99,7 +99,7 @@ pid_p = k_p * error;
 
 $$ d = K_d {d\over dt} e(t) $$
 
-Here's the implementation:
+Implementation:
 
 {% highlight c %}
 
@@ -138,7 +138,7 @@ pwm_out = throttle - pid;
 
 {% endhighlight %}
 
-Note that the PWM range for the brushless motor is 1000 to 2000 microseconds, so you'll want to put a clamp on them so that the brushless motor doesn't receive an order below 1000 or above 2000:
+Note that the PWM range for the brushless motor is 1000 to 2000 microseconds, so you'll want to put a clamp on them such that the brushless motor doesn't receive an order below 1000 or above 2000:
 
 {% highlight c %}
 
@@ -239,7 +239,7 @@ So with that ressuring message I started off with my quest to tune a fast-acting
 
 The solution? Change the values in real time! So I acquired an "unused" tv-remote, and I was lucky enough to have an infrared sensor hanging around. 
 
-<img src="nicks_blog/assets/images/infrared.jpg" alt="">
+<img src="/assets/images/infrared.jpg" alt="">
 
 Now I could instantly change my PID gains without having to re-upload the entire program, cutting a 60 second process down to a fraciton of a second, and it injected a large dose of fun into the tuning process. 
 
