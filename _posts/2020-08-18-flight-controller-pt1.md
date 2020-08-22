@@ -25,11 +25,11 @@ After initially giving up on the project a year earlier, I decided to revisit th
 <img src="/assets/images/single-axis-single-motor.jpg" alt="">
 <p style="text-align: center;"> Single-axis single-motor stand </p>
 
-Quadcopters, along with much of modern flight craft, must be piloted using fly-by-wire. This is typically due to the number of controls and the reaction speeds required being far too high for a pilot to handle. What this means is that when the pilot gives a command, the flight controller figures out how to execute that command. When hovering in a stationary position, the controller still must work to keep the craft in stable condition (for example, gust of wind may hit the craft; due to manufacturing intolerances one motor may be more powerful than another).
+The majority of modern craft, from power steering in cars, to quadcopters, to jet aircraft, must be piloted using fly-by-wire. This is typically due to the number of controls and the reaction speeds required being far too high for a human to handle. What this means is that when the pilot gives a command, the flight controller figures out how to execute that command. Even when hovering in a stationary position, the controller must work to keep the craft in stable condition (for example, a gust of wind may hit the craft, or due to manufacturing intolerances one motor may be more powerful than another).
 
-There are some fancy ways of doing this, but an old tested method is the Proportional, Integral, & Derivative controller. Like the name suggests, the PID controller has three components that act to eliminate error. 
+There are fancy ways of doing this, but an old tested method is the Proportional, Integral, & Derivative controller. Like the name suggests, the PID controller has three components that act to reduce an error. 
 
-Say you have an error between the orientation that the quadcopter is on, and the desired orientation (with no user input, the desired orientation would be parallel to the ground). 
+Say you have an error - the difference between the orientation that the quadcopter is on, and the desired orientation (with no user input, the desired orientation would be parallel to the ground). 
 
 $$ e(t) = setpoint - {\phi} $$
 
@@ -205,10 +205,10 @@ The solution? Change the values in real time! So I acquired an "unused" tv-remot
 
 <img src="/assets/images/infrared.jpg" alt="">
 
-Now I could instantly change my PID gains without having to re-upload the entire program, cutting a 60 second process down to a fraciton of a second, and it injected a large dose of fun into the tuning process. 
+Now PID gains could be changed in real time without having to re-upload the entire program, cutting a 60 second process down to a fraciton of a second. It also injected a dose of fun into the tuning process. 
 
 I used the following resources in this section:
-- Instrumentation & Control Systems, William Bolton
+- Instrumentation & Control Systems, 2nd Ed, William Bolton
 - [link](https://www.wescottdesign.com/articles/pid/pidWithoutAPhd.pdf) - PID Without a PhD, Tim Wescott
 - [link](https://robotics.stackexchange.com/questions/167/what-are-good-strategies-for-tuning-pid-loops) - Robotics Stack Exchange, Pid Tuning
 
@@ -220,7 +220,5 @@ With all that said I managed to cobble together a reasonably well tuned flight s
 Here is a video demonstration of the final single-axis controller:
 
 <p style="text-align: center;"> <iframe width="800" height="450" src="https://www.youtube.com/embed/v6ljsSUh884" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> </p>
-
-Why did I do this? I'm not sure, I thought it would be fun. Note that this project was carried out over the course of the last few years, and the project stood abandoned for long periods of time. When I began, I was at the start of an engineering degree, and didn't really know anything about anything, although to be honest I feel that I know less now that I did then. At the beginning I knew very little about programming or electronics, now I would say I am quite comfortable (for an undergraduate Mechanical Engineer) with procedural & object-oriented programming. Going forward I'd like to balance out my skillset with some electrical knowledge.
 
 Part 2 is next up, focusing on the implementation of a Madgwick filter, and a Mahony filter. 
