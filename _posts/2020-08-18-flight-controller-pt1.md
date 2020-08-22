@@ -7,48 +7,22 @@ author: "Nick"
 
 <p style="text-align: center;">  </p>
 
-This blog series documents the development of a quadcopter flight controller using an Arduino Uno. It is written for my own purposes, and I would not recommend using it as an educational resource. This part of the series focuses on the creation of a single axis stabiliser, with one and then two motors, fixed to a test platform. Here are some of the resources I used during the early stages of this project:
-
-Upon initial research I discovered the tutorial series by Joop Brokking. However I did not want to wholesale copy/paste his or others' code, rather I wanted to understand what I was building step by step, mostly for my own satisfaction rather than any practical purpose. I did use his & others's projects as references while working on this first part of the project.
+This series of posts documents the developement of a quadcopter flight controller, using an Arduino Uno, an MPU6050, and a number of other components. I would not advise using this as an educational resource, as it is rather amatuer-ish.
 
 My overall plan for the project was as follows:
 1. Build a controller that worked on a single fixed axis
 2. Build a controller that worked in 3 degrees of freedom, fixed to a test stand
 3. Test the controller with unrestricted flight
 
-The focus of this post is step 1. Steps 2 & 3 will be covered in the third post. The second post will focus on instrumentation.
+This first part of the series focuses on the creation of a single axis stabiliser. You can find the code & project files discussed below at the following link:
+<p style="text-align: center;"> https://github.com/snicckers/flight-controller </p>
 
 ## Section 1 - First Steps
 <hr>
-I started off with simple Inertial Measurement Unit (IMU), based on sample code I found on some website - If you do a google search you're guaranteed to quickly find something similar. It looks like this:
 
-{% highlight c %}
-void calculate_attitude(int sensor_data[]){
-  /* Attitude from accelerometer */
-  a_magnitude = sqrt(pow(a_read_ave[0], 2) + pow(a_read_ave[1], 2) + pow(a_read_ave[2], 2));
-  a_roll = asin((float)a_read_ave[1] / a_magnitude) * rad_to_degrees; // X
-  a_pitch = asin((float)a_read_ave[0] / a_magnitude) * rad_to_degrees * (-1); // Y
+I started off the project
 
-  /* Attitude from Gyroscope */
-  float t = (micros() - elapsed_time);
-  elapsed_time = micros();
-  double lsb_coefficient = (1 / 32.8) * ((t) / 1000000);
-  g_roll += sensor_data[4] * lsb_coefficient * 1.09;
-  g_pitch += sensor_data[5] * lsb_coefficient * 1.09;
-  //1.09 = coefficient that makes gyro attitue match accel attitude.
-
-  /* Complimentary FIlter */
-  float hpf = 0.9996; // High Pass Filter
-  float lpf = 1.0 - hpf; // Low Pass Fbilter
-  g_roll = hpf * g_roll + lpf * a_roll;
-  g_pitch = hpf * g_pitch + lpf * a_pitch;
-}
-
-{% endhighlight %}
-
-The instrumentation gets a lot more complicated later on, but this will suit just fine for working with a single axis. Here Euler angles found by integrating gyro rates from an MPU6050. MEMS gyro rates always gradually drift, causing inaccuracies over long time periods. The solution is to correct the drift using accelerometer data using a complimentary filter.  This is a huge oversimplification, and it will be addressed further in the part 2. There is no rotation matrix for the angles coming from the gyro, so no tilt compensation is performed in this IMU (aside from the accelerometer slowly correcting the angle). This is not the final IMU that I went with, but for getting a controller to work on a single axis it does the job.
-
-I built an admittedly terrible setup, and programmed a simple Proportiona-Integral-Derivative Controller. It performed awfully, & in retrospect I should have realized this ahead of time:
+I built an admittedly terrible setup, and programmed a simple Proportiona-Integral-Derivative Controller. As you may expect. it performed poorly:
 
 <img src="/assets/gifs/single-axis-first-try.gif" alt="">
 <p style="text-align: center;"> lol </p>
