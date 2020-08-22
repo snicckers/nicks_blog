@@ -14,32 +14,22 @@ My overall plan for the project was as follows:
 2. Build a controller that worked in 3 degrees of freedom, fixed to a test stand
 3. Test the controller with unrestricted flight
 
-This first part of the series focuses on the creation of a single axis stabiliser. You can find the code & project files discussed below at the following link:
+This first part of the series focuses on the creation of a single axis stabiliser. You can find the project files discussed below at the following link:
 <p style="text-align: center;"> https://github.com/snicckers/flight-controller </p>
 
-## Section 1 - First Steps
+## Section 1 - Controller
 <hr>
 
-I started off the project
-
-I built an admittedly terrible setup, and programmed a simple Proportiona-Integral-Derivative Controller. As you may expect. it performed poorly:
-
-<img src="/assets/gifs/single-axis-first-try.gif" alt="">
-<p style="text-align: center;"> lol </p>
-
-After this initial foray, now early in the second year of my degree, I lost interest in the project. I did not return to it for over a year.
-
-## Section 2 - Controller
-<hr>
-
-Fast forward a year, with a class in control systems under my belt, I decided to revisit the project. I built a new, much safer, single axis test stand. I started out by attaching only 1 motor to the platform, thinking it would be easier to learn the implementation & tuning of PID controllers.
+After initially giving up on the project a year earlier, I decided to revisit the project with a class in control systems under my belt. I built a single axis test stand, and started out by attaching only 1 motor to the platform, thinking it would be easier to learn the implementation & tuning of PID controllers. The inertial measurement unit (IMU) used while developing this controller was a very simple complimentary filter between accelerometer & gyroscope instruments, but the final IMU used is a Madwick Filter that I implemented, which will be discussed in part 2. For working with a single axis, either IMU will do.
 
 <img src="/assets/images/single-axis-single-motor.jpg" alt="">
 <p style="text-align: center;"> Single-axis single-motor stand </p>
 
-Due to the instability of a quadcopter platform, it has to be fly-by-wire. So when the pilot gives it a command, and the flight controller figures out how to execute that command in a stable fashion. When hovering in a stationary position, the controller still has to do a lot of work to keep the craft in a stable position (imagine a gust of wind hitting the quadcopter, or if, due to inaccuracies due to cheap manufacturing practices, one motor is more powerful than another).
+Quadcopters, along with much of modern flight craft, must be piloted using fly-by-wire. This is typically due to the number of controls and the reaction speeds required being far too high for a pilot to handle. What this means is that when the pilot gives a command, the flight controller figures out how to execute that command. When hovering in a stationary position, the controller still must work to keep the craft in stable condition (for example, gust of wind may hit the craft; due to manufacturing intolerances one motor may be more powerful than another).
 
-There are some very fancy ways of doing this, but an old tried and tested method is the Proportional, Integral, & Derivative controller. Like the name suggests, the PID controller has three components that act to eliminate error. Say you have an error between the orientation that the quadcopter is on, and the desired orientation (with no user input, the desired orientation would be parallel to the ground). 
+There are some fancy ways of doing this, but an old tested method is the Proportional, Integral, & Derivative controller. Like the name suggests, the PID controller has three components that act to eliminate error. 
+
+Say you have an error between the orientation that the quadcopter is on, and the desired orientation (with no user input, the desired orientation would be parallel to the ground). 
 
 $$ e(t) = setpoint - {\phi} $$
 
