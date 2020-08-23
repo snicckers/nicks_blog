@@ -15,7 +15,7 @@ My overall plan for the project was as follows:
 3. Test the controller with unrestricted flight
 
 This first part of the series focuses on the creation of a single axis flight stabilizer. You can find the project files discussed below at the following link:
-<p style="text-align: center;"> link[https://github.com/snicckers/single-axis-flight-controller] </p>
+<p style="text-align: center;"> https://github.com/snicckers/single-axis-flight-controller </p>
 
 ## Section 1 - Controller
 <hr>
@@ -27,7 +27,7 @@ After initially giving up on the project a year earlier, I revisited the project
 
 The majority of modern craft, from power steering in cars, to quadcopters, to jet aircraft, must be piloted using fly-by-wire. This is typically due to the number of controls and the reaction speeds required being far too high for a human to handle. What this means is that when the pilot gives a command, the flight controller figures out how to execute that command. Even when hovering in a stationary position, the controller must work to keep the craft in stable condition (for example, a gust of wind may hit the craft, or due to manufacturing intolerances one motor may be more powerful than another).
 
-An old tested method for achieving this is the Proportional, Integral, & Derivative controller. Like the name suggests, the PID controller has three components that act to reduce an error. 
+A tested method for achieving this is the Proportional, Integral, & Derivative controller. As the name suggests, the PID controller has three components that act to reduce an error. 
 
 Say you have an error - the difference between the orientation that the quadcopter is on, and the desired orientation (with no user input, the desired orientation would be parallel to the ground). 
 
@@ -55,9 +55,11 @@ Here's the implementation:
 
 pid_p = k_p * error;
 
+- Insert gif of proportional action??
+
 {% endhighlight %}
 
-**Derivative Control:** A value based on how fast the error is changing. The value will only get large when there's a large change in error over a short period. This tends to oppose any rapid change in motion. On its own, the derivative component will only act to oppose a change in the setpoint, but it will not correct error. This is also tuned by a constant $$ K_d $$ gain. 
+**Derivative Control:** A value based on how fast the error is changing. The value will only get large when there's a large change in error over a short period. This tends to oppose any rapid change in motion. On its own, the derivative component will only act to oppose a change in the setpoint, but it will not correct error. This is also tuned by a constant $$ K_d $$ gain. When combined with proportional action, a PD controller can do most of the work required to rapidly reach the setpoint. 
 
 $$ d = K_d {d\over dt} e(t) $$
 
@@ -97,6 +99,8 @@ pid = pid_p + pid_i + pid_d;
 pwm_out = throttle - pid;
 
 {% endhighlight %}
+
+- insert gif of integral & integral + pid action
 
 Note that the PWM range for the brushless motor is 1000 to 2000 microseconds, so you'll want to put a clamp on them such that the brushless motor doesn't receive an order below 1000 or above 2000:
 
@@ -144,7 +148,7 @@ if (pwm_left > 2000) pwm_left = 2000;
 ## Section 2.1 - Derivative Kick
 <hr>
 
-As the project moved along I started using a potentiometer, and later a radio transmitter / controller, to change the setpoint, as a preparation for radio control in the future. I soon noticed that if I rapidly changed the setpoint, there would be an enormous spike in the controller's output values to the motor. For example, setting the throttle to 1300 with a reasonably well tuned controller, if I ordered a near-instant change in the setpoint, the output value would shoot to the maximum (2000) instantly. 
+As the project moved along I started using a radio reciever / controller to change the setpoint, as a preparation for radio control in the future. I soon noticed that if I rapidly changed the setpoint, there would be an enormous spike in the controller's output values to the motor. For example, setting the throttle to 1300 with a reasonably well tuned controller, if I ordered a near-instant change in the setpoint, the output value would shoot to the maximum (2000) instantly. 
 
 <img src="/assets/gifs/derivative-kick-example.gif" alt="">
 <p style="text-align: center;"> Notice the spikes </p>
@@ -193,7 +197,7 @@ When moving to a two-motor setup the first thing I did was try out the Nichols-Z
 4. Repeat steps 2 & 3 until you're happy with the speed of the response
 5. Increase the I gain until it reaches the setpoint in a minimul number of oscillations
 
-Yes this method is sort of winging it, but while doing some reading into the topic I came upon this:
+I felt that this method was sort of "winging it", it lacked the engineering rigor that my degree had conditioned me with. But when reading into PID control I found the following:
 
 >**"**The very nice thing about tuning a PID controller is that you don’t need to have a good understanding of formal control theory to do a fairly good job of it.  Ninety percent of the closed-loop controller applications in the world do very well indeed with a controller that is only tuned fairly well...**"**
 
