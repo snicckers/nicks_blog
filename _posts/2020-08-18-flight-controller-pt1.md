@@ -7,27 +7,27 @@ author: "Nick"
 
 <p style="text-align: center;">  </p>
 
-This series of posts documents the developement of a quadcopter flight controller, using an Arduino Uno, an MPU6050, and a number of other components. I would not advise using this as an educational resource, as it is rather amatuer-ish.
+This is the first in a series of posts that document the developement of a quadcopter flight controller, using an Arduino Uno, an MPU6050, and a number of other components.
 
 My overall plan for the project was as follows:
 1. Build a controller that worked on a single fixed axis
 2. Build a controller that worked in 3 degrees of freedom, fixed to a test stand
 3. Test the controller with unrestricted flight
 
-This first part of the series focuses on the creation of a single axis stabiliser. You can find the project files discussed below at the following link:
-<p style="text-align: center;"> https://github.com/snicckers/flight-controller </p>
+This first part of the series focuses on the creation of a single axis flight stabilizer. You can find the project files discussed below at the following link:
+<p style="text-align: center;"> link[https://github.com/snicckers/single-axis-flight-controller] </p>
 
 ## Section 1 - Controller
 <hr>
 
-After initially giving up on the project a year earlier, I decided to revisit the project with a class in control systems under my belt. I built a single axis test stand, and started out by attaching only 1 motor to the platform, thinking it would be easier to learn the implementation & tuning of PID controllers. The inertial measurement unit (IMU) used while developing this controller was a very simple complimentary filter between accelerometer & gyroscope instruments, but the final IMU used is a Madwick Filter that I implemented, which will be discussed in part 2. For working with a single axis, either IMU will do.
+After initially giving up on the project a year earlier, I revisited the project with a class in control systems under my belt. I built a test stand and started out by attaching only 1 motor to the platform, thinking it would be easier to learn the implementation & tuning of PID controllers on one axis. The inertial measurement unit (IMU) used while developing this controller was a very simple complimentary filter between accelerometer & gyroscope instruments, but the final IMU used is a Madwick Filter that I implemented, which will be discussed in part 2. For working with a single axis, either IMU will do.
 
 <img src="/assets/images/single-axis-single-motor.jpg" alt="">
 <p style="text-align: center;"> Single-axis single-motor stand </p>
 
 The majority of modern craft, from power steering in cars, to quadcopters, to jet aircraft, must be piloted using fly-by-wire. This is typically due to the number of controls and the reaction speeds required being far too high for a human to handle. What this means is that when the pilot gives a command, the flight controller figures out how to execute that command. Even when hovering in a stationary position, the controller must work to keep the craft in stable condition (for example, a gust of wind may hit the craft, or due to manufacturing intolerances one motor may be more powerful than another).
 
-There are fancy ways of doing this, but an old tested method is the Proportional, Integral, & Derivative controller. Like the name suggests, the PID controller has three components that act to reduce an error. 
+An old tested method for achieving this is the Proportional, Integral, & Derivative controller. Like the name suggests, the PID controller has three components that act to reduce an error. 
 
 Say you have an error - the difference between the orientation that the quadcopter is on, and the desired orientation (with no user input, the desired orientation would be parallel to the ground). 
 
@@ -36,18 +36,16 @@ $$ e(t) = setpoint - {\phi} $$
 Or:
 
 {% highlight c %}
-
 error = desired_angle - pitch;
-
 {% endhighlight %}
 
-Then the controller will attempt to correct that error by modifying the output to the actuator that influences the orientation - in this case brushless motor speed. It does this by modifying the output by the following.
+Then the controller will attempt to correct that error by modifying the output to the actuator that influences the orientation - in this case, brushless motor speed. It does this by modifying the output by the following.
 
 $$ pid = K_p e(t) + K_i {\int} e(t) dt + K_d {d\over dt} e(t) $$
 
-But what does this mean?
+What does all of this mean?
 
-**Proportional Control:** The actuator output is modified by a value proportional to the error. A big error will have a correspondingly large modification to the output. This is tuned / controlled with a constant $$ K_p $$. When using only the proportional component, you will tend to get an oscillating motion around the setpoint. 
+**Proportional Control:** The actuator output is modified by a value proportional to the error. A big error will have a correspondingly big modification to the output. This is tuned / controlled with a constant $$ K_p $$ gain. When using only the proportional component, you will tend to get an oscillating motion around the setpoint. 
 
 $$ p = K_p e(t) $$
 
@@ -59,20 +57,18 @@ pid_p = k_p * error;
 
 {% endhighlight %}
 
-**Derivative Control:** A value based on how fast the error is changing. The value will only get large when there's a large change in error over a short period. This tends to oppose any rapid change in motion. So if the proportional component very quickly changes the motor speed to correct a large error, then the derivative component will attempt to slow down the motor as the error changes, effectively opposing the proportional component. Again, this is tuned by a constant $$ K_d $$. 
+**Derivative Control:** A value based on how fast the error is changing. The value will only get large when there's a large change in error over a short period. This tends to oppose any rapid change in motion. On its own, the derivative component will only act to oppose a change in the setpoint, but it will not correct error. This is also tuned by a constant $$ K_d $$ gain. 
 
 $$ d = K_d {d\over dt} e(t) $$
 
 Implementation:
 
 {% highlight c %}
-
 /* sample_time - the sime since previous error was recorded */
 pid_d = k_d * ((error - previous_error) / sample_time);
-
 {% endhighlight %}
 
-**Integral Control:** Finally, the integral component is the summation of the error over some desired time period. This can be dangerous if it's allowed too much power, and the one I had the most trouble with. One method to prevent the output change from becoming very large over a long time period, the integral component is only allowed to record the error's history when it is close to the setpoint. It is useful for smoothing out the output when close to the setpoint. In the case of a quadcopter, when tuned correctly, it can provide a very stable platform for photographers or other media professionals to mount camera equipment.
+**Integral Control:** Finally, the integral component is the summation of the error over some desired time period. Wh`en working alone it acts like a delayed proportional controller, but adding proportional control tends to dampen to oscillation. It suffers from integral wind-up, which is when too much error history is accumulated. This can cause a dramatic overshoot of the setpoint, so integral action is often prevented from acting unless it is within a short range of the setpoint. It has its own gain, $$ K_i $$.
 
 $$ i = K_i {\int} e(t) dt $$
 
@@ -122,7 +118,11 @@ Here is an example of this controller working with a single motor:
 
 <p style="text-align: center;"> <iframe width="800" height="450" src="https://www.youtube.com/embed/RLtDDuf4XfQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> </p>
 
-Scroll down to section 4 to see it working with two motors. The code change for two motors is very simple:
+Scroll down to section 4 to see it working with two motors. Below is a diagram for this control system using two motors:
+
+<img src="/assets/images/single-axis-flight-stabiliser-diagram.png" alt="">
+
+The corresponding code change for two motors is very simple:
 
 {% highlight c %}
 
@@ -199,13 +199,13 @@ Yes this method is sort of winging it, but while doing some reading into the top
 
 <p style="text-align: center;"> Tim Wescott, PID Without a PhD </p>
 
-So with that ressuring message I started off with my quest to tune a fast-acting controller. However, changing the values, waiting for the program to upload, observing the results, and repeating, was a very time consuming and tedious activity.
+With this reassurance I started off with my tuning quest. However, changing the values, waiting for the program to upload, observing the results, and repeating, was a very time consuming and tedious activity.
 
 The solution? Change the values in real time! So I acquired an "unused" tv-remote, and I was lucky enough to have an infrared sensor hanging around. 
 
 <img src="/assets/images/infrared.jpg" alt="">
 
-Now PID gains could be changed in real time without having to re-upload the entire program, cutting a 60 second process down to a fraciton of a second. It also injected a dose of fun into the tuning process. 
+After hooking them up to my Arduino, PID gains could be changed in real time without having to re-upload the entire program, cutting a 60 second process down to a fraciton of a second. It also injected a dose of fun.
 
 I used the following resources in this section:
 - Instrumentation & Control Systems, 2nd Ed, William Bolton
