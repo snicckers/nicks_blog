@@ -179,7 +179,7 @@ pid_d = (-1.0f) * k_d * ((pitch - previous_pitch) / sample_time);
 
 Note the change in sign. Here is a side-by-side comparison of the PID outputs. Red is using the error variable to calculate its derivative action, blue is using the process variable.
 
-<img src="/assets/gifs/derivative-kick-corrected-example.gif" alt="">
+<img src="/assets/images/derivativeKickExample.jpg" alt="">
 <p style="text-align: center;"> Notice blue is almost identical to red, only without the spikes </p>
 
 You can see that when using the process variable is almost the same as when using the error - only there are no spikes when the setpoint rapidly changes. 
