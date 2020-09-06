@@ -43,19 +43,17 @@ Then the controller will attempt to correct that error by modifying the output t
 
 $$ pid = K_p e(t) + K_i {\int} e(t) dt + K_d {d\over dt} e(t) $$
 
-What does all of this mean?
+What does this mean?
 
 **Proportional Control:** The actuator output is modified by a value proportional to the error. A big error will have a correspondingly big modification to the output. This is tuned / controlled with a constant $$ K_p $$ gain. When using only the proportional component, you will tend to get an oscillating motion around the setpoint. 
 
 $$ p = K_p e(t) $$
 
-Here's the implementation:
+Implementation:
 
 {% highlight c %}
 
 pid_p = k_p * error;
-
-- Insert gif of proportional action??
 
 {% endhighlight %}
 
