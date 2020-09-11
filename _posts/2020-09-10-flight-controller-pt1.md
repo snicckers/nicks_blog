@@ -7,7 +7,7 @@ author: "Nick"
 
 <p style="text-align: center;">  </p>
 
-<p style="text-align: center;"> <iframe width="800" height="450" src="https://www.youtube.com/watch?v=UaFPJgMZJ5E" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> </p>
+<iframe width="800" height="450" src="https://www.youtube.com/embed/UaFPJgMZJ5E" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 This is the first post in a series that covers the developement of a quadcopter flight controller. In this project I used an Arduino Uno, and MPU6050, and a number of other componenets.
 
