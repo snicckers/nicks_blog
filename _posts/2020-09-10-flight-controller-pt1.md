@@ -19,7 +19,7 @@ My overall plan for the project was as follows:
 Project files for the single axis controller can be found at the following link:
 <p style="text-align: center;"> https://github.com/snicckers/single-axis-flight-controller </p>
 
-## 1. Controller
+### 1. Controller
 <hr>
 
 The majority of modern craft, from power steering in cars, to quadcopters, to jet aircraft, must be piloted using a fly-by-wire system. Typically, reaction speeds and number of controls required for stable operation exceed human capabilities. The result is that when the pilot gives a command, the flight controller figures out how to execute that command. A simple, widely-used control method is the proportional-integral-derivative (PID) controller, which acts to reduce error.
@@ -100,7 +100,7 @@ The corresponding code change for two motors is very simple:
 pwm_right = throttle - pid;
 pwm_left = throttle + pid;
 
-// clamp PWM time length output
+// clamp PWM output
 // esc's are programmed to stop working if they recieve a signal out of range
 if (pwm_right < 1000) pwm_right = 1000;
 if (pwm_right > 2000) pwm_right = 2000;
@@ -109,17 +109,17 @@ if (pwm_left > 2000) pwm_left = 2000;
 
 {% endhighlight %}
 
-This is more compicated with four motors, as we have at least two degrees of freedom (roll & pitch) affecting each other. If you add a magnetometer to the IMU (to correct unstable yaw measurements) and a barometer (for reliable altitude measurement), then you have four degrees of freedom that can be corrected by the controller: Roll, pitch, yaw, altitude. The control theory & implementation for this will be discuessed in a later post.
+This is more compicated with four motors, as we have at least two degrees of freedom (roll & pitch) affecting each other. If you add a magnetometer to the IMU (to correct unstable yaw measurements) and a barometer (for reliable altitude measurement), then you have four degrees of movement that can be corrected by the controller: Roll, pitch, yaw, altitude. The control theory & implementation for this will be discuessed in a later post.
 
-## 1.1 Derivative Kick
+### 1.1 Derivative Kick
 <hr>
 
-After adding a radio reciever to the platform, I noticed that when the setpoint was rapidly changed (with a radio controller) there would be violent spike in pid values. This was physically dangerous. A motor with it's thrust set at 30% (pwm of 1300 us) would shoot to 100% thrust uncontrollably if I changed the sepoint too quickly.
+After adding a radio reciever to the platform, I noticed that when the setpoint was rapidly changed (with a radio controller) there would be violent spike in pid values. This proved physically dangerous. A motor with it's thrust set at 30% (pwm of 1300 us) would shoot to 100% thrust uncontrollably if I changed the sepoint too quickly.
 
 <img src="/assets/gifs/derivative-kick-example.gif" alt="">
 <p style="text-align: center;"> PID output with time, notice the spikes </p>
 
-research led me to find that this is a common behaviour known as Derivative Kick. For more information:
+I came to find that this is a common behaviour known as Derivative Kick. For more information:
 - https://controlguru.com/pid-control-and-derivative-on-measurement/ 
 - https://www.youtube.com/watch?v=KErYuh4VDtI 
 
@@ -149,7 +149,7 @@ Note the change in sign. Here is a side-by-side comparison of the PID outputs. R
 
 So, using the process variable instead of the error variable for derivative control clearly removes these kicks. Problem sovled.
 
-## 2. Tuning & Rapid Testing
+### 2. Tuning & Rapid Testing
 <hr>
 
 Tuning PID gains was a slow process. But tuning didn't need to be great to be effective with a single motor.
@@ -179,7 +179,7 @@ Resources:
 - [link](https://www.wescottdesign.com/articles/pid/pidWithoutAPhd.pdf) - PID Without a PhD, Tim Wescott
 - [link](https://robotics.stackexchange.com/questions/167/what-are-good-strategies-for-tuning-pid-loops) - Robotics Stack Exchange, Pid Tuning
 
-## 3. Reflection
+### 3. Reflection
 <hr>
 
 With all that said I managed to cobble together a reasonably well tuned flight stabilizer working on a single axis with two motors. Being able to change the PID constants in real time and actually see the results as I changed them was a better education than any textbook can provide. In the future I may use something like Matlab to do my tuning, but at least I'll have the advantage of having a good understanding of PIDs.
