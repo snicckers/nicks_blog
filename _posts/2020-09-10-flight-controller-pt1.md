@@ -13,7 +13,7 @@ This is the first post in a series that covers the developement of a quadcopter 
 
 My overall plan for the project was as follows:
 1. Build a controller/stabiliser that worked on a single fixed axis
-2. Build a controller that worked in 3 degrees of freedom, attatched to a fixture
+2. Model & Simulate a quadcopter in MATLAB/Simulink
 3. Test the controller with unrestricted flight
 
 Project files for the single axis controller can be found at the following link:
@@ -22,9 +22,9 @@ Project files for the single axis controller can be found at the following link:
 ### 1. Controller
 <hr>
 
-The majority of modern craft, from power steering in cars, to quadcopters, to jet aircraft, must be piloted using a fly-by-wire system. Typically, reaction speeds and number of controls required for stable operation exceed human capabilities. The result is that when the pilot gives a command, the flight controller figures out how to execute that command. A simple, widely-used control method is the proportional-integral-derivative (PID) controller, which acts to reduce error.
+Modern vehicles, such as cars, jets, & helicopters, typically must be controlled using fly-by-wire systmes. This is because the number of controls or the reaction speeds required for stable operation exceeds human capabilities. This means that when an operator gives a command, the controller figures out how to execute that command safely. A simple, widely-used control method is the proportional-integral-derivative (PID) controller.
 
-In my case, the error is the difference between the measured angle and the desired angle. At this stage I was using a very simple inertial measurement unit (IMU) to detemrine the attitude, but later on I replaced it with my own implementation of a Magdwick Filter, discussed in part 2. 
+Each element in a PID controller acts to reduce error. In my case, the error is the difference between the measured angle and the desired angle. At this stage I was using a very simple inertial measurement unit (IMU) to detemrine the attitude, but later on I replaced it with my own implementation of a Magdwick Filter.
 
 Deciding it would be best to incrementally develope the controller, I built a test stand and attached only one motor to the platform. Later I would move on to two and then four motors, but for now I needed to get comfortable with PID's.
 
@@ -182,6 +182,4 @@ Resources:
 ### 3. Reflection
 <hr>
 
-With all that said I managed to cobble together a reasonably well tuned flight stabilizer working on a single axis with two motors. Being able to change the PID constants in real time and actually see the results as I changed them was a better education than any textbook can provide. In the future I may use something like Matlab to do my tuning, but at least I'll have the advantage of having a good understanding of PIDs.
-
-Part 2 is next up, focusing on the implementation of a Madgwick filter, and a Mahony filter. 
+Being able to change the PID constants in real time and actually see the results as I changed them was a good education. The next post will focus on simulation & control of a quadcopter in MATLAB/Simulink, and finally unrestricted physical flight.
